@@ -36,6 +36,10 @@ export const AddContact = observer(() => {
     reset,
   } = useForm<Fields>({
     resolver: yupResolver(validationScheme),
+    defaultValues: {
+      name: "",
+      phone: "",
+    },
   });
 
   const closeModal = () => {

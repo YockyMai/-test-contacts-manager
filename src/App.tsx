@@ -14,7 +14,7 @@ function App() {
     if (userId && !isAuth) {
       checkAuth(userId);
     }
-  });
+  }, []);
 
   return (
     <>

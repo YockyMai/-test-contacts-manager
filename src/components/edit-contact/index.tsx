@@ -13,11 +13,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { ContactScheme } from "../../types/contact";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ContactsStore from "../../store/contacts-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAddContactScheme } from "../../utils/get-add-contact-scheme";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputMask from "react-input-mask";
 import { showNotification } from "@mantine/notifications";
+import { observer } from "mobx-react-lite";
 
 type Props = {
   contact: ContactScheme;
@@ -28,7 +29,7 @@ type Fields = {
   phone: string;
 };
 
-export const EditContact = ({ contact }: Props) => {
+export const EditContact = observer(({ contact }: Props) => {
   const [modalIsOpen, { open, close }] = useDisclosure(false);
   const { editContact } = ContactsStore;
   const [isLoading, setIsLoading] = useState(false);
@@ -39,17 +40,17 @@ export const EditContact = ({ contact }: Props) => {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
+    setValue,
   } = useForm<Fields>({
     resolver: yupResolver(validationScheme),
-    defaultValues: {
-      name: contact.name,
-      phone: contact.phone,
-    },
   });
 
+  useEffect(() => {
+    setValue("phone", contact.phone);
+    setValue("name", contact.name);
+  }, []);
+
   const closeModal = () => {
-    reset();
     close();
   };
 
@@ -104,7 +105,9 @@ export const EditContact = ({ contact }: Props) => {
               </Text>
             )}
             <SimpleGrid cols={2}>
-              <Button onClick={closeModal}>Отменить изменения</Button>
+              <Button color={"red"} onClick={closeModal}>
+                Отменить изменения
+              </Button>
               <Button loading={isLoading} type={"submit"}>
                 Редактировать
               </Button>
@@ -114,4 +117,4 @@ export const EditContact = ({ contact }: Props) => {
       </Modal>
     </>
   );
-};
+});
