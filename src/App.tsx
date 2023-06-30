@@ -10,9 +10,9 @@ function App() {
   const { checkAuth, isAuth } = AuthStore;
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (userId && !isAuth) {
-      checkAuth(userId);
+    const token = localStorage.getItem("token");
+    if (token && !isAuth) {
+      checkAuth();
     }
   }, []);
 

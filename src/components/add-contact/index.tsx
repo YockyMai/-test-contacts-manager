@@ -15,7 +15,6 @@ import InputMask from "react-input-mask";
 import { useState } from "react";
 import { getAddContactScheme } from "../../utils/get-add-contact-scheme";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { showNotification } from "@mantine/notifications";
 
 type Fields = {
   phone: string;
@@ -52,9 +51,6 @@ export const AddContact = observer(() => {
     createContact(data)
       .then(() => {
         closeModal();
-        showNotification({
-          message: "Контакт успешно добавлен",
-        });
       })
       .finally(() => {
         setIsLoading(false);

@@ -1,23 +1,24 @@
-import { $http } from "./instance";
+import { $authHttp } from "./instance";
 import { ContactScheme } from "../types/contact";
 
 export const ContactsApi = {
-  getContacts: (userId: number, searchValue?: string) =>
-    $http.get(`/api/v1/users/${userId}/contacts`, {
+  getContacts: (searchValue?: string) =>
+    $authHttp.get(`/api/contact/`, {
       params: {
-        ...(searchValue && { name: searchValue.trim() }),
+        ...(searchValue && { search: searchValue.trim() }),
       },
     }),
 
-  createContact: (contact: Omit<ContactScheme, "id">, userId: number) =>
-    $http.post(`/api/v1/users/${userId}/contacts`, contact),
+  createContact: (contact: { phone: string; name: string }) =>
+    $authHttp.post(`/api/contact/create`, contact),
 
-  deleteContact: (contactId: number, userId: number) =>
-    $http.delete(`/api/v1/users/${userId}/contacts/${contactId}`),
+  deleteContact: (contactId: number) =>
+    $authHttp.delete(`/api/contact/delete`, {
+      params: {
+        contactId,
+      },
+    }),
 
   editContact: (contact: ContactScheme) =>
-    $http.put(
-      `/api/v1/users/${contact.userId}/contacts/${contact.id}`,
-      contact
-    ),
+    $authHttp.post(`/api/contact/edit`, contact),
 };

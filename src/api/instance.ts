@@ -1,8 +1,20 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://6304f38b697408f7edbee328.mockapi.io/",
+  baseURL: "http://localhost:3001",
   timeout: 3000,
 });
 
-export { instance as $http };
+const authInstance = axios.create({
+  baseURL: "http://localhost:3001",
+  timeout: 3000,
+});
+
+authInstance.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem("token") || "";
+
+  config.headers.Authorization = `Bearer ${accessToken}`;
+  return config;
+});
+
+export { instance as $http, authInstance as $authHttp };

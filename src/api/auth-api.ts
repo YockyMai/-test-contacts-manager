@@ -1,14 +1,15 @@
-import { $http } from "./instance";
+import { $authHttp, $http } from "./instance";
 
 export const AuthApi = {
   login: (username: string, password: string) =>
-    $http.get(`/api/v1/users?username=${username}&password=${password}`),
-  signup: (username: string, password: string) =>
-    $http.get("/api/v1/users", {
-      data: {
-        username,
-        password,
-      },
+    $http.post("/api/user/login", {
+      username,
+      password,
     }),
-  check: (userId: string) => $http.get(`/api/v1/users/${userId}`),
+  signup: (username: string, password: string) =>
+    $http.post("/api/user/registration", {
+      username,
+      password,
+    }),
+  check: () => $authHttp.get(`/api/user/check`),
 };

@@ -16,6 +16,7 @@ specifiers:
   eslint: ^8.38.0
   eslint-plugin-react-hooks: ^4.6.0
   eslint-plugin-react-refresh: ^0.3.4
+  jwt-decode: ^3.1.2
   mobx: ^6.9.0
   mobx-react-lite: ^3.4.3
   react: ^18.2.0
@@ -35,6 +36,7 @@ dependencies:
   '@mantine/hooks': 6.0.15_react@18.2.0
   '@mantine/notifications': 6.0.15_uj7uj5zw2dr65cfgacjzlvweky
   axios: 1.4.0
+  jwt-decode: 3.1.2
   mobx: 6.9.0
   mobx-react-lite: 3.4.3_lrdhi4fih7ii4kmeak7ov4c3ha
   react: 18.2.0
@@ -1816,6 +1818,10 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
     dev: true
+
+  /jwt-decode/3.1.2:
+    resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
+    dev: false
 
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}

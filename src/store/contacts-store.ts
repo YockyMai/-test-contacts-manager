@@ -2,7 +2,9 @@ import { ContactScheme } from "../types/contact";
 import { makeAutoObservable } from "mobx";
 import { showNotification } from "@mantine/notifications";
 import { ContactsApi } from "../api/contacts-api";
-import UserStore from "./user-store";
+import { phoneToNumber } from "../utils/phone-to-number";
+import { AxiosError } from "axios";
+import { getApiErrorsText } from "../utils/get-api-errors-messages";
 
 class ContactsStore {
   contacts: ContactScheme[] = [];
@@ -14,13 +16,11 @@ class ContactsStore {
 
   fetchContacts = async (searchValue: string) => {
     try {
-      const userId = UserStore.user.id;
-
       this.isLoading = true;
 
-      const { data } = await ContactsApi.getContacts(userId, searchValue);
+      const { data } = await ContactsApi.getContacts(searchValue);
 
-      this.contacts = data;
+      this.contacts = data.contacts;
     } catch (e) {
       showNotification({
         color: "red",
@@ -34,26 +34,36 @@ class ContactsStore {
 
   createContact = async (contact: { name: string; phone: string }) => {
     try {
-      const userId = UserStore.user.id;
-      const { data } = await ContactsApi.createContact(
-        { userId: userId, name: contact.name, phone: contact.phone },
-        userId
-      );
-      this.contacts.push(data);
-    } catch (e) {
-      showNotification({
-        color: "red",
-        title: "Ошибка при создании контакта",
-        message: "Попробуйте позже",
+      const { data } = await ContactsApi.createContact({
+        name: contact.name,
+        phone: phoneToNumber(contact.phone),
       });
+      this.contacts.push(data.contact);
+
+      showNotification({
+        message: "Контакт успешно добавлен",
+      });
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        showNotification({
+          color: "red",
+          title: "Ошибка валидации",
+          message: getApiErrorsText(e.response!.data.message.errors),
+        });
+      } else {
+        showNotification({
+          color: "red",
+          title: "Ошибка сервера",
+          message: "Попробуйте позже",
+        });
+      }
     }
   };
 
   deleteContact = async (contactId: number) => {
     try {
-      const userId = UserStore.user.id;
-      const { data } = await ContactsApi.deleteContact(contactId, userId);
-      this.contacts = this.contacts.filter((el) => el.id !== data.id);
+      await ContactsApi.deleteContact(contactId);
+      this.contacts = this.contacts.filter((el) => el.id !== contactId);
     } catch (e) {
       showNotification({
         color: "red",
@@ -67,16 +77,27 @@ class ContactsStore {
     try {
       const { data } = await ContactsApi.editContact(contact);
 
-      const index = this.contacts.findIndex(({ id }) => id === data.id);
+      const index = this.contacts.findIndex(({ id }) => id === data.contact.id);
       if (index !== -1) {
-        this.contacts[index] = data;
+        this.contacts[index] = data.contact;
       }
-    } catch (e) {
       showNotification({
-        color: "red",
-        title: "Ошибка при редактировании контакта",
-        message: "Попробуйте позже",
+        message: "Контакт успешно изменен",
       });
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        showNotification({
+          color: "red",
+          title: "Ошибка валидации",
+          message: getApiErrorsText(e.response!.data.message.errors),
+        });
+      } else {
+        showNotification({
+          color: "red",
+          title: "Ошибка сервера",
+          message: "Попробуйте позже",
+        });
+      }
     }
   };
 }

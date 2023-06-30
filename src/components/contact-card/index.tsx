@@ -3,6 +3,7 @@ import { Divider, Group, Title, Text, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { ContactActions } from "../contact-actions";
 import { Copy } from "tabler-icons-react";
+import { numberToPhone } from "../../utils/number-to-phone";
 
 type Props = {
   contact: ContactScheme;
@@ -40,7 +41,7 @@ export const ContactCard = ({ contact }: Props) => {
         rightIcon={<Copy />}
         color={"teal"}
       >
-        <Text>Телефон: {contact.phone}</Text>
+        <Text>Телефон: {numberToPhone(contact.phone)}</Text>
       </Button>
     </div>
   );

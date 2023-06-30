@@ -17,8 +17,9 @@ import { useEffect, useState } from "react";
 import { getAddContactScheme } from "../../utils/get-add-contact-scheme";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputMask from "react-input-mask";
-import { showNotification } from "@mantine/notifications";
 import { observer } from "mobx-react-lite";
+import { numberToPhone } from "../../utils/number-to-phone";
+import { phoneToNumber } from "../../utils/phone-to-number";
 
 type Props = {
   contact: ContactScheme;
@@ -30,6 +31,7 @@ type Fields = {
 };
 
 export const EditContact = observer(({ contact }: Props) => {
+  console.log(contact);
   const [modalIsOpen, { open, close }] = useDisclosure(false);
   const { editContact } = ContactsStore;
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +48,7 @@ export const EditContact = observer(({ contact }: Props) => {
   });
 
   useEffect(() => {
-    setValue("phone", contact.phone);
+    setValue("phone", numberToPhone(contact.phone));
     setValue("name", contact.name);
   }, []);
 
@@ -56,12 +58,14 @@ export const EditContact = observer(({ contact }: Props) => {
 
   const onSubmit: SubmitHandler<Fields> = (data) => {
     setIsLoading(true);
-    editContact({ ...data, userId: contact.userId, id: contact.id })
+    editContact({
+      phone: phoneToNumber(data.phone),
+      name: data.name,
+      userId: contact.userId,
+      id: contact.id,
+    })
       .then(() => {
         closeModal();
-        showNotification({
-          message: "Контакт успешно изменен",
-        });
       })
       .finally(() => {
         setIsLoading(false);
