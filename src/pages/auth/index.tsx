@@ -7,7 +7,6 @@ import {
   PasswordInput,
   Group,
   Button,
-  Mark,
 } from "@mantine/core";
 import { getValidationSchema } from "../../utils/get-auth-scheme";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -44,11 +43,6 @@ export const Auth = observer(() => {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
-          {isLoginPage && (
-            <Text>
-              <Mark>Пароль и имя для входа: TestUser</Mark>
-            </Text>
-          )}
           <TextInput
             label={"Имя пользователя"}
             placeholder={"Введите имя пользователя"}
